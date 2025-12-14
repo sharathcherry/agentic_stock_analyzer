@@ -115,3 +115,43 @@ python watcher/stock_watcher.py
 - Self-learning prediction model
 - Live agent feed dashboard
 - Historical performance tracking
+
+## 🌐 Deployment to GitHub
+
+The repository is already initialized and ready to push to GitHub.
+
+### Option 1: Using GitHub Web Interface (Recommended)
+1. Go to [GitHub](https://github.com) and sign in
+2. Click the **+** icon in the top right → **New repository**
+3. Name your repository (e.g., `stock-analysis-platform`)
+4. Choose **Public** or **Private**
+5. **DO NOT** initialize with README, .gitignore, or license
+6. Click **Create repository**
+7. Copy the repository URL (e.g., `https://github.com/username/stock-analysis-platform.git`)
+8. Run these commands in your terminal:
+   ```bash
+   git remote add origin https://github.com/username/stock-analysis-platform.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+### Option 2: Using GitHub CLI
+```bash
+gh repo create stock-analysis-platform --public --source=. --remote=origin
+git branch -M main
+git push -u origin main
+```
+
+### Important Notes
+- ✅ All sensitive files (.env, node_modules, venv, etc.) are already excluded via .gitignore
+- ✅ The repository has been cleaned of unnecessary files
+- ✅ Initial commit has been created
+- ⚠️ Never commit your .env files - use .env.example as templates
+
+### After Deployment
+Update the repository with:
+```bash
+git add .
+git commit -m "Your commit message"
+git push
+```
