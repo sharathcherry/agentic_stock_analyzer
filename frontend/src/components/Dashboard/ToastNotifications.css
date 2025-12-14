@@ -1,0 +1,153 @@
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 380px;
+}
+
+.sound-toggle {
+    position: fixed;
+    top: 20px;
+    right: 420px;
+    width: 44px;
+    height: 44px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.sound-toggle:hover {
+    background: #334155;
+    transform: scale(1.1);
+}
+
+.sound-toggle.enabled {
+    background: #667eea20;
+    border-color: #667eea;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    animation: slideIn 0.3s ease-out;
+    transition: all 0.2s;
+}
+
+.toast:hover {
+    transform: translateX(-4px);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toast-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex: 1;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.toast-close {
+    width: 24px;
+    height: 24px;
+    background: #334155;
+    border: none;
+    border-radius: 50%;
+    color: #94a3b8;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: #475569;
+    color: #f1f5f9;
+}
+
+/* Toast Types */
+.toast-success {
+    border-left: 4px solid #10b981;
+}
+
+.toast-warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.toast-error {
+    border-left: 4px solid #ef4444;
+}
+
+.toast-price-up {
+    border-left: 4px solid #10b981;
+    background: linear-gradient(90deg, #10b98110 0%, #1e293b 100%);
+}
+
+.toast-price-down {
+    border-left: 4px solid #ef4444;
+    background: linear-gradient(90deg, #ef444410 0%, #1e293b 100%);
+}
+
+.toast-prediction {
+    border-left: 4px solid #667eea;
+    background: linear-gradient(90deg, #667eea10 0%, #1e293b 100%);
+}
+
+.toast-market {
+    border-left: 4px solid #3b82f6;
+}
+
+.toast-info {
+    border-left: 4px solid #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .sound-toggle {
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+    }
+}

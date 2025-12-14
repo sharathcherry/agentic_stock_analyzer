@@ -1,0 +1,253 @@
+.error-boundary {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 500px;
+    background: #1e293b;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid #334155;
+}
+
+.error-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.error-content h2 {
+    color: #f1f5f9;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.error-message {
+    color: #94a3b8;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.error-details {
+    text-align: left;
+    margin-bottom: 24px;
+    background: #0f172a;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.error-details summary {
+    color: #667eea;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.error-details pre {
+    font-size: 12px;
+    color: #94a3b8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+.error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.retry-btn,
+.reload-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.retry-btn {
+    background: #667eea;
+    color: white;
+}
+
+.retry-btn:hover {
+    background: #5a67d8;
+}
+
+.reload-btn {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+.reload-btn:hover {
+    background: #475569;
+}
+
+/* Error Fallback */
+.error-fallback {
+    text-align: center;
+    padding: 32px;
+    background: #1e293b;
+    border-radius: 12px;
+    border: 1px solid #ef4444;
+}
+
+.error-fallback h3 {
+    color: #f1f5f9;
+    margin: 12px 0 8px;
+}
+
+.error-fallback p {
+    color: #94a3b8;
+    margin-bottom: 16px;
+}
+
+.error-fallback button {
+    padding: 10px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Loading Skeleton */
+.loading-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skeleton-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skeleton-line {
+    height: 16px;
+    background: linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 60%;
+}
+
+.skeleton-text {
+    height: 14px;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 40%;
+}
+
+.skeleton-big {
+    height: 40px;
+    width: 200px;
+}
+
+.skeleton-chart {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.skeleton-chart-area {
+    height: 300px;
+    background: linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #1e293b;
+    border-radius: 8px;
+}
+
+.skeleton-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #334155 0%, #475569 50%, #334155 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-price {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+    background: #1e293b;
+    border-radius: 12px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    background: #1e293b;
+    border-radius: 16px;
+    border: 1px solid #334155;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    color: #f1f5f9;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.empty-action {
+    padding: 10px 24px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.empty-action:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+}
