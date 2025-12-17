@@ -149,27 +149,121 @@ class YahooFinanceService:
             return None
     
     @staticmethod
-    def convert_symbol_to_yahoo(symbol: str, exchange: str = "NSE") -> str:
+    def convert_symbol_to_yahoo(symbol: str, exchange: str = "AUTO") -> str:
         """
-        Convert Indian stock symbol to Yahoo Finance format.
+        Convert stock symbol to Yahoo Finance format.
+        Intelligently detects US vs Indian stocks.
         
         Args:
-            symbol: Stock symbol (e.g., 'RELIANCE', 'RELIANCE-EQ')
-            exchange: Exchange (NSE or BSE)
+            symbol: Stock symbol (e.g., 'RELIANCE', 'AAPL', 'MSFT')
+            exchange: Exchange ('NSE', 'BSE', or 'AUTO' for auto-detection)
             
         Returns:
-            Yahoo Finance ticker (e.g., 'RELIANCE.NS' or 'RELIANCE.BO')
+            Yahoo Finance ticker (e.g., 'RELIANCE.NS', 'AAPL', 'MSFT')
         """
-        # Remove -EQ suffix if present
-        symbol = symbol.replace('-EQ', '').strip()
+        # Remove -EQ suffix if present (Indian stocks)
+        symbol = symbol.replace('-EQ', '').strip().upper()
         
-        # Add appropriate suffix
-        if exchange.upper() == "NSE":
+        # Common US tech stocks (FAANG + major tech)
+        us_tech_stocks = {
+            'AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'META', 'TSLA', 'NVDA',
+            'AMD', 'INTC', 'NFLX', 'ORCL', 'CRM', 'ADBE', 'CSCO', 'IBM',
+            'PYPL', 'UBER', 'LYFT', 'SNAP', 'TWTR', 'SQ', 'SHOP', 'SPOT',
+            'ZOOM', 'DOCU', 'OKTA', 'NET', 'CRWD', 'ZS', 'DDOG', 'MDB'
+        }
+        
+        # Major US companies across sectors
+        us_stocks = {
+            'JPM', 'BAC', 'WFC', 'GS', 'MS', 'C',  # Banks
+            'JNJ', 'PFE', 'UNH', 'ABT', 'TMO', 'MRK',  # Healthcare
+            'XOM', 'CVX', 'COP', 'SLB',  # Energy
+            'WMT', 'HD', 'NKE', 'MCD', 'SBUX', 'KO', 'PEP',  # Retail/Consumer
+            'BA', 'CAT', 'GE', 'MMM', 'HON',  # Industrial
+            'V', 'MA', 'DIS', 'CMCSA',  # Others
+        }
+        
+        # Combine all known US stocks
+        known_us_stocks = us_tech_stocks | us_stocks
+        
+        # Common Indian stocks (NSE)
+        known_indian_stocks = {
+            # IT Services
+            'TCS', 'INFY', 'WIPRO', 'HCLTECH', 'TECHM', 'LTI', 'LTIM', 'COFORGE',
+            'PERSISTENT', 'MPHASIS', 'MINDTREE',
+            
+            # Banking & Finance  
+            'HDFCBANK', 'ICICIBANK', 'SBIN', 'AXISBANK', 'KOTAKBANK', 'INDUSINDBK',
+            'BANDHANBNK', 'FEDERALBNK', 'IDFCFIRSTB', 'PNB', 'BANKBARODA',
+            'BAJFINANCE', 'BAJAJFINSV', 'HDFC', 'CHOLAFIN', 'MUTHOOTFIN', 'LICHSGFIN',
+            
+            # Energy & Oil
+            'RELIANCE', 'ONGC', 'IOC', 'BPCL', 'HINDPETRO', 'GAIL', 'NTPC',
+            'POWERGRID', 'ADANIGREEN', 'ADANIPOWER', 'TATAPOWER', 'TORNTPOWER',
+            
+            # Automobiles
+            'TATAMOTORS', 'MARUTI', 'M&M', 'BAJAJ-AUTO', 'HEROMOTOCO', 'EICHERMOT',
+            'ASHOKLEY', 'ESCORTS', 'TVS', 'TVSMOTOR', 'APOLLOTYRE', 'MRF',
+            
+            # FMCG & Consumer
+            'HINDUNILVR', 'ITC', 'NESTLEIND', 'BRITANNIA', 'DABUR', 'MARICO',
+            'GODREJCP', 'COLPAL', 'EMAMILTD', 'VBL', 'TATACONSUM', 'PGHH',
+            
+            # Pharma
+            'SUNPHARMA', 'CIPLA', 'DRREDDY', 'DIVISLAB', 'BIOCON', 'AUROPHARMA',
+            'LUPIN', 'TORNTPHARM', 'ALKEM', 'GLENMARK', 'CADILAHC', 'IPCALAB',
+            
+            # Steel & Metals
+            'TATASTEEL', 'HINDALCO', 'JSWSTEEL', 'VEDL', 'COALINDIA', 'SAIL',
+            'NMDC', 'JINDALSTEL', 'HINDZINC', 'NATIONALUM',
+            
+            # Telecom & Media
+            'BHARTIARTL', 'IDEA', 'ZEEL', 'SUNTV', 'HATHWAY', 'DEN',
+            
+            # Cement & Construction
+            'ULTRACEMCO', 'GRASIM', 'AMBUJACEM', 'ACC', 'SHREECEM', 'RAMCOCEM',
+            'LT', 'LTTS', 'LTECH',
+            
+            # Real Estate
+            'DLF', 'PHOENIXLTD', 'PRESTIGE', 'SOBHA', 'BRIGADE', 'GODREJPROP',
+            
+            # Others
+            'ADANIENT', 'ADANIPORTS', 'ASIANPAINT', 'TITAN', 'PIDILITIND',
+            'HAVELLS', 'VOLTAS', 'BOSCHLTD', 'SIEMENS', 'ABB', 'CROMPTON'
+        }
+        
+        # Auto-detection logic
+        if exchange.upper() == "AUTO":
+            # First, check if it's a known Indian stock
+            if symbol in known_indian_stocks:
+                logger.info(f"Detected Indian stock: {symbol}")
+                return f"{symbol}.NS"
+            
+            # Then check if it's in known US stocks list
+            if symbol in known_us_stocks:
+                logger.info(f"Detected US stock: {symbol}")
+                return symbol
+            
+            # If symbol is 1-4 characters and all uppercase, likely US stock
+            # (Most unknown Indian stocks are longer or have specific patterns)
+            if len(symbol) <= 4 and symbol.isalpha():
+                # Default to US for very short unknown tickers
+                logger.info(f"Assuming US stock (short unknown ticker): {symbol}")
+                return symbol
+            
+            # Default to Indian NSE for unknown symbols
+            logger.info(f"Defaulting to Indian NSE stock: {symbol}")
+            return f"{symbol}.NS"
+        
+        # Explicit exchange specified
+        elif exchange.upper() == "NSE":
             return f"{symbol}.NS"
         elif exchange.upper() == "BSE":
             return f"{symbol}.BO"
+        elif exchange.upper() == "US" or exchange.upper() == "NASDAQ" or exchange.upper() == "NYSE":
+            return symbol
         else:
-            return f"{symbol}.NS"  # Default to NSE
+            # Default to NSE for unknown exchanges
+            return f"{symbol}.NS"
 
 
 # Create service instance

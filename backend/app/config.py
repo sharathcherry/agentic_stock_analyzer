@@ -46,10 +46,13 @@ class Settings(BaseSettings):
         """Returns watchlist symbols as a list."""
         return [s.strip() for s in self.WATCHLIST_SYMBOLS.split(",")]
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = {
+        "env_file": ".env",
+        "case_sensitive": True,
+        "extra": "ignore"
+    }
 
 
 # Global settings instance
 settings = Settings()
+

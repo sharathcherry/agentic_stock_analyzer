@@ -30,30 +30,33 @@ async def get_realtime_price(ticker: str):
     try:
         yahoo_ticker = YahooFinanceService.convert_symbol_to_yahoo(
             ticker.replace('.NS', '').replace('.BO', ''), 
-            'NSE'
+            'AUTO'
         )
         
-        price_data = YahooFinanceService.get_ltp(yahoo_ticker)
+        stock_data = YahooFinanceService.get_stock_data(yahoo_ticker, period="1d")
         
-        if price_data is None:
+        if stock_data is None:
             raise HTTPException(status_code=404, detail=f"Could not fetch data for {ticker}")
         
-        # Get additional details
-        stock_info = YahooFinanceService.get_stock_info(yahoo_ticker)
+        price = stock_data.get('current_price', 0)
+        previous_close = stock_data.get('previous_close', 0)
+        change = price - previous_close if price and previous_close else 0
+        change_percent = stock_data.get('price_change_percent', 0)
+        info = stock_data.get('info', {})
         
         return {
             "symbol": ticker,
-            "price": price_data,
-            "change": stock_info.get('change', 0),
-            "changePercent": stock_info.get('changePercent', 0),
-            "open": stock_info.get('open', 0),
-            "high": stock_info.get('high', 0),
-            "low": stock_info.get('low', 0),
-            "volume": stock_info.get('volume', 0),
-            "avgVolume": stock_info.get('avgVolume', 0),
-            "marketCap": stock_info.get('marketCap', 0),
-            "fiftyTwoWeekHigh": stock_info.get('fiftyTwoWeekHigh', 0),
-            "fiftyTwoWeekLow": stock_info.get('fiftyTwoWeekLow', 0),
+            "price": price,
+            "change": round(change, 2),
+            "changePercent": round(change_percent, 2),
+            "open": info.get('open', 0),
+            "high": info.get('52_week_high', 0),
+            "low": info.get('52_week_low', 0),
+            "volume": info.get('volume', 0),
+            "avgVolume": info.get('avg_volume', 0),
+            "marketCap": info.get('market_cap', 0),
+            "fiftyTwoWeekHigh": info.get('52_week_high', 0),
+            "fiftyTwoWeekLow": info.get('52_week_low', 0),
             "timestamp": datetime.utcnow().isoformat()
         }
     except Exception as e:
@@ -250,19 +253,26 @@ async def get_stock_price(ticker: str):
             'NSE'
         )
         
-        price = YahooFinanceService.get_ltp(yahoo_ticker)
-        stock_info = YahooFinanceService.get_stock_info(yahoo_ticker)
+        stock_data = YahooFinanceService.get_stock_data(yahoo_ticker, period="1d")
         
-        return {
-            "ticker": ticker,
-            "price": price,
-            "change": stock_info.get('change', 0),
-            "changePercent": stock_info.get('changePercent', 0),
-            "open": stock_info.get('open', 0),
-            "high": stock_info.get('high', 0),
-            "low": stock_info.get('low', 0),
-            "volume": stock_info.get('volume', 0)
-        }
+        if stock_data:
+            price = stock_data.get('current_price', 0)
+            previous_close = stock_data.get('previous_close', 0)
+            change = price - previous_close if price and previous_close else 0
+            info = stock_data.get('info', {})
+            
+            return {
+                "ticker": ticker,
+                "price": price,
+                "change": round(change, 2),
+                "changePercent": stock_data.get('price_change_percent', 0),
+                "open": info.get('open', 0),
+                "high": info.get('52_week_high', 0),
+                "low": info.get('52_week_low', 0),
+                "volume": info.get('volume', 0)
+            }
+        else:
+            return {"ticker": ticker, "price": None, "error": "Could not fetch data"}
     except Exception as e:
         return {"ticker": ticker, "price": None, "error": str(e)}
 
@@ -311,19 +321,23 @@ async def websocket_prices(websocket: WebSocket):
                 try:
                     yahoo_ticker = YahooFinanceService.convert_symbol_to_yahoo(
                         ticker.replace('.NS', '').replace('.BO', ''), 
-                        'NSE'
+                        'AUTO'
                     )
-                    price = YahooFinanceService.get_ltp(yahoo_ticker)
-                    stock_info = YahooFinanceService.get_stock_info(yahoo_ticker)
+                    stock_data = YahooFinanceService.get_stock_data(yahoo_ticker, period="1d")
                     
-                    await websocket.send_json({
-                        "type": "price_update",
-                        "ticker": ticker,
-                        "price": price,
-                        "change": stock_info.get('change', 0),
-                        "changePercent": stock_info.get('changePercent', 0),
-                        "timestamp": datetime.utcnow().isoformat()
-                    })
+                    if stock_data:
+                        price = stock_data.get('current_price', 0)
+                        previous_close = stock_data.get('previous_close', 0)
+                        change = price - previous_close if price and previous_close else 0
+                        
+                        await websocket.send_json({
+                            "type": "price_update",
+                            "ticker": ticker,
+                            "price": price,
+                            "change": round(change, 2),
+                            "changePercent": stock_data.get('price_change_percent', 0),
+                            "timestamp": datetime.utcnow().isoformat()
+                        })
                 except Exception as e:
                     print(f"Error fetching price for {ticker}: {e}")
             
