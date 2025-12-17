@@ -39,8 +39,8 @@ env/
 .DS_Store
 
 # Environment Variables
-.env
-*.env
+# .env
+# *.env
 !.env.example
 
 # Testing
